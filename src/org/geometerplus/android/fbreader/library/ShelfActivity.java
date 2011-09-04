@@ -2,12 +2,10 @@ package org.geometerplus.android.fbreader.library;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Gallery;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.graphics.Bitmap;
+import android.view.*;
+import android.widget.*;
+import android.graphics.*;
+import android.graphics.drawable.*;
 
 import org.geometerplus.zlibrary.core.image.ZLImage;
 import org.geometerplus.zlibrary.core.image.ZLLoadableImage;
@@ -21,6 +19,9 @@ import org.geometerplus.fbreader.tree.FBTree;
 import org.geometerplus.fbreader.library.*;
 
 public class ShelfActivity extends Activity implements Library.ChangeListener {
+	private static final int WIDTH = 150;
+	private static final int HEIGHT = 200;
+
 	private BooksDatabase myDatabase;
 	private Library myLibrary;
 	private ShelfAdapter myAdapter0;
@@ -47,8 +48,14 @@ public class ShelfActivity extends Activity implements Library.ChangeListener {
 
 		setContentView(R.layout.shelf);
 		((Gallery)findViewById(R.id.shelf0)).setAdapter(myAdapter0);
+		((Gallery)findViewById(R.id.shelf0)).setPadding(0, 20, 0, 20);
+		((Gallery)findViewById(R.id.shelf0)).setSpacing(20);
 		((Gallery)findViewById(R.id.shelf1)).setAdapter(myAdapter1);
+		((Gallery)findViewById(R.id.shelf1)).setPadding(0, 20, 0, 20);
+		((Gallery)findViewById(R.id.shelf1)).setSpacing(20);
 		((Gallery)findViewById(R.id.shelf2)).setAdapter(myAdapter2);
+		((Gallery)findViewById(R.id.shelf2)).setPadding(0, 20, 0, 20);
+		((Gallery)findViewById(R.id.shelf2)).setSpacing(20);
 	}
 
 	public void onLibraryChanged(final Code code) {
@@ -84,7 +91,7 @@ public class ShelfActivity extends Activity implements Library.ChangeListener {
 			} else {
 				data = mgr.getImageData(cover);
 			}
-			return data != null ? data.getBitmap(2 * myCoverWidth, 2 * myCoverHeight) : null;
+			return data != null ? data.getBitmap(2 * WIDTH, 2 * HEIGHT) : null;
 		}
 
 		private int myCoverWidth = -1;
@@ -92,40 +99,15 @@ public class ShelfActivity extends Activity implements Library.ChangeListener {
 		private final Runnable myInvalidateViewsRunnable = new Runnable() {
 			public void run() {
 				notifyDataSetChanged();
-				//getListView().invalidateViews();
 			}
 		};
 
-		private ImageView getCoverView(View parent) {
-			if (myCoverWidth == -1) {
-				//parent.measure(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-				//myCoverHeight = parent.getMeasuredHeight();
-				myCoverHeight = 100;
-				myCoverWidth = 80;
-				//myCoverWidth = myCoverHeight * 15 / 32;
-				//parent.requestLayout();
-			}
-
-			final ImageView coverView = new ImageView(ShelfActivity.this);
-			//coverView.getLayoutParams().width = myCoverWidth;
-			//coverView.getLayoutParams().height = myCoverHeight;
-			//coverView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-			coverView.setScaleType(ImageView.ScaleType.FIT_XY);
-			coverView.setLayoutParams(new Gallery.LayoutParams(110, 140));
-			coverView.requestLayout();
-			return coverView;
-		}
-
 		public int getCount() {
-			System.err.println("COUNT = " + myTree.subTrees().size());
 			return myTree.subTrees().size();
 		}
 
 		public FBTree getItem(int position) {
-			System.err.println("requested item at position " + position);
-			// TODO: implement
 			return myTree.subTrees().get(position);
-			//return null;
 		}
 
 		public long getItemId(int position) {
@@ -133,27 +115,52 @@ public class ShelfActivity extends Activity implements Library.ChangeListener {
 		}
 
 		public View getView(int position, View convertView, ViewGroup parent) {
-			System.err.println("requested view at position " + position);
-			// TODO: implement
 			final LibraryTree tree = (LibraryTree)getItem(position);
-			final ImageView view = getCoverView(parent);
-			final Bitmap coverBitmap = getCoverBitmap(tree.getCover());
+			//final FrameLayout frame = new FrameLayout(ShelfActivity.this);
+			final Bitmap coverBitmap = getCoverBitmap(/*imageView,*/ tree.getCover());
 			if (coverBitmap != null) {
-				view.setImageBitmap(coverBitmap);
+				/*
+				final ImageView coverView = new ImageView(ShelfActivity.this);
+				coverView.setScaleType(ImageView.ScaleType.FIT_XY);
+				coverView.setLayoutParams(new Gallery.LayoutParams(WIDTH, HEIGHT));
+				coverView.setMinimumWidth(WIDTH);
+				coverView.setMinimumHeight(HEIGHT);
+				coverView.setImageBitmap(coverBitmap);
+				//coverView.requestLayout();
+				return coverView;
+				*/
+				final TextView titleView = new TextView(ShelfActivity.this);
+				Drawable background = new BitmapDrawable(coverBitmap);
+				//background = new ScaleDrawable(background, Gravity.CENTER, WIDTH / 150f, HEIGHT / 200f);
+				//background = new ScaleDrawable(background, Gravity.FILL, WIDTH, HEIGHT);
+				titleView.setBackgroundDrawable(background);
+				titleView.setTypeface(Typeface.DEFAULT_BOLD);
+				titleView.setTextColor(Color.BLACK);
+				titleView.setText(tree.getName());
+				titleView.setPadding(28, 10, 10, 40);
+				titleView.setMinWidth(WIDTH);
+				titleView.setMaxWidth(WIDTH);
+				titleView.setMinHeight(HEIGHT);
+				titleView.setMaxHeight(HEIGHT);
+				titleView.setGravity(Gravity.CENTER);
+				return titleView;
 			} else {
-				view.setImageResource(R.drawable.ic_list_library_book);
+				final TextView titleView = new TextView(ShelfActivity.this);
+				Drawable background = ShelfActivity.this.getResources().getDrawable(R.drawable.book_cover);
+				//background = new ScaleDrawable(background, Gravity.CENTER, WIDTH / 150f, HEIGHT / 200f);
+				//background = new ScaleDrawable(background, Gravity.FILL, WIDTH, HEIGHT);
+				titleView.setBackgroundDrawable(background);
+				titleView.setTypeface(Typeface.DEFAULT_BOLD);
+				titleView.setTextColor(Color.BLACK);
+				titleView.setText(tree.getName());
+				titleView.setPadding(28, 10, 10, 40);
+				titleView.setMinWidth(WIDTH);
+				titleView.setMaxWidth(WIDTH);
+				titleView.setMinHeight(HEIGHT);
+				titleView.setMaxHeight(HEIGHT);
+				titleView.setGravity(Gravity.CENTER);
+				return titleView;
 			}
-			/*
-			final ImageView view = new ImageView(ShelfActivity.this);
-			view.setImageResource(R.drawable.fbreader);
-			view.setScaleType(ImageView.ScaleType.FIT_XY);
-			view.setLayoutParams(new Gallery.LayoutParams(88, 88));
-			*/
-
-			// The preferred Gallery item background
-			//view.setBackgroundResource(mGalleryItemBackground);
-
-			return view;
 		}
 	}
 }
