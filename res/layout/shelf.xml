@@ -6,17 +6,17 @@
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
 >
-	<Gallery
+	<com.devsmart.android.ui.HorizontalListView
 		android:id="@+id/shelf0"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 	/>
-	<Gallery
+	<com.devsmart.android.ui.HorizontalListView
 		android:id="@+id/shelf1"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 	/>
-	<Gallery
+	<com.devsmart.android.ui.HorizontalListView
 		android:id="@+id/shelf2"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"

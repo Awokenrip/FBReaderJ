@@ -10,6 +10,8 @@ import android.graphics.*;
 import android.graphics.drawable.*;
 import android.util.DisplayMetrics;
 
+import com.devsmart.android.ui.HorizontalListView;
+
 import org.geometerplus.zlibrary.core.image.ZLImage;
 import org.geometerplus.zlibrary.core.image.ZLLoadableImage;
 import org.geometerplus.zlibrary.core.filesystem.ZLFile;
@@ -51,15 +53,15 @@ public class ShelfActivity extends Activity implements Library.ChangeListener {
 		myAdapter2 = new ShelfAdapter(tree.subTrees());
 
 		setContentView(R.layout.shelf);
-		((Gallery)findViewById(R.id.shelf0)).setAdapter(myAdapter0);
-		((Gallery)findViewById(R.id.shelf0)).setPadding(0, 20, 0, 20);
-		((Gallery)findViewById(R.id.shelf0)).setSpacing(20);
-		((Gallery)findViewById(R.id.shelf1)).setAdapter(myAdapter1);
-		((Gallery)findViewById(R.id.shelf1)).setPadding(0, 20, 0, 20);
-		((Gallery)findViewById(R.id.shelf1)).setSpacing(20);
-		((Gallery)findViewById(R.id.shelf2)).setAdapter(myAdapter2);
-		((Gallery)findViewById(R.id.shelf2)).setPadding(0, 20, 0, 20);
-		((Gallery)findViewById(R.id.shelf2)).setSpacing(20);
+		((HorizontalListView)findViewById(R.id.shelf0)).setAdapter(myAdapter0);
+		((HorizontalListView)findViewById(R.id.shelf0)).setPadding(0, 20, 0, 20);
+		//((HorizontalListView)findViewById(R.id.shelf0)).setSpacing(20);
+		((HorizontalListView)findViewById(R.id.shelf1)).setAdapter(myAdapter1);
+		((HorizontalListView)findViewById(R.id.shelf1)).setPadding(0, 20, 0, 20);
+		//((HorizontalListView)findViewById(R.id.shelf1)).setSpacing(20);
+		((HorizontalListView)findViewById(R.id.shelf2)).setAdapter(myAdapter2);
+		((HorizontalListView)findViewById(R.id.shelf2)).setPadding(0, 20, 0, 20);
+		//((HorizontalListView)findViewById(R.id.shelf2)).setSpacing(20);
 	}
 
 	public void onLibraryChanged(final Code code) {
@@ -162,11 +164,14 @@ public class ShelfActivity extends Activity implements Library.ChangeListener {
 		public View getView(int position, View convertView, ViewGroup parent) {
 			final LibraryTree tree = (LibraryTree)getItem(position);
 			//final FrameLayout frame = new FrameLayout(ShelfActivity.this);
-			final Bitmap coverBitmap = getCoverBitmap(/*imageView,*/ tree.getCover());
+			Bitmap coverBitmap = getCoverBitmap(/*imageView,*/ tree.getCover());
 			if (coverBitmap != null) {
+				coverBitmap = Bitmap.createScaledBitmap(
+					coverBitmap, getCoverWidth(), getCoverHeight(), false
+				);
 				final ImageView coverView = new ImageView(ShelfActivity.this);
 				coverView.setScaleType(ImageView.ScaleType.FIT_XY);
-				coverView.setLayoutParams(new Gallery.LayoutParams(getCoverWidth(), getCoverHeight()));
+				coverView.setLayoutParams(new HorizontalListView.LayoutParams(getCoverWidth(), getCoverHeight()));
 				coverView.setMinimumWidth(getCoverWidth());
 				coverView.setMinimumHeight(getCoverHeight());
 				coverView.setImageBitmap(coverBitmap);
