@@ -49,7 +49,6 @@ import org.geometerplus.fbreader.network.tree.NetworkBookTree;
 import org.geometerplus.fbreader.network.urlInfo.*;
 import org.geometerplus.fbreader.network.opds.OPDSBookItem;
 
-import org.geometerplus.android.fbreader.network.action.ActionCode;
 import org.geometerplus.android.fbreader.network.action.OpenCatalogAction;
 import org.geometerplus.android.fbreader.network.action.NetworkBookActions;
 
@@ -330,7 +329,6 @@ public class NetworkBookInfoActivity extends Activity implements NetworkLibrary.
 	}
 
 	private final void setupButtons() {
-		final ZLResource resource = NetworkLibrary.resource();
 		final int buttons[] = new int[] {
 				R.id.network_book_button0,
 				R.id.network_book_button1,
@@ -415,6 +413,9 @@ public class NetworkBookInfoActivity extends Activity implements NetworkLibrary.
 		switch (requestCode) {
 			case NetworkLibraryActivity.SIGNUP_CODE:
 				Util.processSignup(myBook.Link, resultCode, data);
+				break;
+			case NetworkLibraryActivity.AUTO_SIGNIN_CODE:
+				Util.processAutoSignIn(this, myBook.Link, resultCode, data);
 				break;
 		}
 	}

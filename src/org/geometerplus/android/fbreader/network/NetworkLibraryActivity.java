@@ -34,17 +34,14 @@ import org.geometerplus.zlibrary.ui.android.network.SQLiteCookieDatabase;
 import org.geometerplus.fbreader.tree.FBTree;
 import org.geometerplus.fbreader.network.*;
 import org.geometerplus.fbreader.network.tree.*;
-import org.geometerplus.fbreader.network.urlInfo.UrlInfo;
-import org.geometerplus.fbreader.network.authentication.NetworkAuthenticationManager;
 
 import org.geometerplus.android.fbreader.tree.BaseActivity;
-import org.geometerplus.android.fbreader.api.PluginApi;
-
 import org.geometerplus.android.fbreader.network.action.*;
 
 public class NetworkLibraryActivity extends BaseActivity implements NetworkLibrary.ChangeListener {
 	protected static final int BASIC_AUTHENTICATION_CODE = 1;
 	protected static final int SIGNUP_CODE = 2;
+	protected static final int AUTO_SIGNIN_CODE = 3;
 
 	BookDownloaderServiceConnection Connection;
 
@@ -250,7 +247,6 @@ public class NetworkLibraryActivity extends BaseActivity implements NetworkLibra
 		}
 
 		final NetworkTree tree = (NetworkTree)getListAdapter().getItem(position);
-		Action defaultAction = null;
 		for (Action a : myListClickActions) {
 			if (a.isVisible(tree) && a.isEnabled(tree)) {
 				a.checkAndRun(tree);
@@ -273,6 +269,9 @@ public class NetworkLibraryActivity extends BaseActivity implements NetworkLibra
 			case SIGNUP_CODE:
 				Util.processSignup(((NetworkCatalogTree)getCurrentTree()).Item.Link, resultCode, intent);
 				break;
+			case AUTO_SIGNIN_CODE:
+				Util.processAutoSignIn(this, ((NetworkCatalogTree)getCurrentTree()).Item.Link, resultCode, intent);
+				break;
 		}
 	}
 
@@ -284,7 +283,7 @@ public class NetworkLibraryActivity extends BaseActivity implements NetworkLibra
 			fillOptionsMenuList();
 		}
 
-		final NetworkTree tree = (NetworkTree)getCurrentTree();
+//		final NetworkTree tree = (NetworkTree)getCurrentTree();
 		for (Action a : myOptionsMenuActions) {
 			final MenuItem item = menu.add(0, a.Code, Menu.NONE, "");
 			if (a.IconId != -1) {
