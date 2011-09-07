@@ -55,13 +55,13 @@ public class ShelfActivity extends Activity implements Library.ChangeListener {
 		setContentView(R.layout.shelf);
 		((HorizontalListView)findViewById(R.id.shelf0)).setAdapter(myAdapter0);
 		((HorizontalListView)findViewById(R.id.shelf0)).setPadding(0, 20, 0, 20);
-		//((HorizontalListView)findViewById(R.id.shelf0)).setSpacing(20);
+		((HorizontalListView)findViewById(R.id.shelf0)).setSpacing(20);
 		((HorizontalListView)findViewById(R.id.shelf1)).setAdapter(myAdapter1);
 		((HorizontalListView)findViewById(R.id.shelf1)).setPadding(0, 20, 0, 20);
-		//((HorizontalListView)findViewById(R.id.shelf1)).setSpacing(20);
+		((HorizontalListView)findViewById(R.id.shelf1)).setSpacing(20);
 		((HorizontalListView)findViewById(R.id.shelf2)).setAdapter(myAdapter2);
 		((HorizontalListView)findViewById(R.id.shelf2)).setPadding(0, 20, 0, 20);
-		//((HorizontalListView)findViewById(R.id.shelf2)).setSpacing(20);
+		((HorizontalListView)findViewById(R.id.shelf2)).setSpacing(20);
 	}
 
 	public void onLibraryChanged(final Code code) {
@@ -138,7 +138,30 @@ public class ShelfActivity extends Activity implements Library.ChangeListener {
 			} else {
 				data = mgr.getImageData(cover);
 			}
-			return data != null ? data.getBitmap(2 * getCoverWidth(), 2 * getCoverHeight()) : null;
+
+			if (data == null) {
+				return null;
+			}
+			final Bitmap bitmap = data.getBitmap(2 * getCoverWidth(), 2 * getCoverHeight());
+			if (bitmap == null) {
+				return null;
+			}
+			final Bitmap coverBitmap = Bitmap.createBitmap(
+				getCoverWidth(), getCoverHeight(), Bitmap.Config.ARGB_8888
+			);
+			final Rect src = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+			final Rect dst;
+			if (bitmap.getWidth() * getCoverHeight() > bitmap.getHeight() * getCoverWidth()) {
+				final int h = bitmap.getHeight() * getCoverWidth() / bitmap.getWidth();
+				final int dY = (getCoverHeight() - h) / 2;
+				dst = new Rect(0, dY, getCoverWidth(), dY + h);
+			} else {
+				final int w = bitmap.getWidth() * getCoverHeight() / bitmap.getHeight();
+				final int dX = (getCoverWidth() - w) / 2;
+				dst = new Rect(dX, 0, dX + w, getCoverHeight());
+			}
+			new Canvas(coverBitmap).drawBitmap(bitmap, src, dst, new Paint());
+			return coverBitmap;
 		}
 
 		private final Runnable myInvalidateViewsRunnable = new Runnable() {
@@ -166,9 +189,6 @@ public class ShelfActivity extends Activity implements Library.ChangeListener {
 			//final FrameLayout frame = new FrameLayout(ShelfActivity.this);
 			Bitmap coverBitmap = getCoverBitmap(/*imageView,*/ tree.getCover());
 			if (coverBitmap != null) {
-				coverBitmap = Bitmap.createScaledBitmap(
-					coverBitmap, getCoverWidth(), getCoverHeight(), false
-				);
 				final ImageView coverView = new ImageView(ShelfActivity.this);
 				coverView.setScaleType(ImageView.ScaleType.FIT_XY);
 				coverView.setLayoutParams(new HorizontalListView.LayoutParams(getCoverWidth(), getCoverHeight()));

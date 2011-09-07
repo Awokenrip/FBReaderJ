@@ -58,6 +58,7 @@ public class HorizontalListView extends AdapterView<ListAdapter> {
 	private OnItemSelectedListener mOnItemSelected;
 	private OnItemClickListener mOnItemClicked;
 	private boolean mDataChanged = false;
+	private int mSpacing = 0;
 	
 
 	public HorizontalListView(Context context, AttributeSet attrs) {
@@ -76,6 +77,10 @@ public class HorizontalListView extends AdapterView<ListAdapter> {
 		mGesture = new GestureDetector(getContext(), mOnGesture);
 	}
 	
+	public void setSpacing(int spacing) {
+		mSpacing = spacing;
+	}
+
 	@Override
 	public void setOnItemSelectedListener(AdapterView.OnItemSelectedListener listener) {
 		mOnItemSelected = listener;
@@ -151,6 +156,7 @@ public class HorizontalListView extends AdapterView<ListAdapter> {
 
 	@Override
 	protected synchronized void onLayout(boolean changed, int left, int top, int right, int bottom) {
+		System.err.println(this + ".onLayout " + changed + " " + left + " " + top + " " + right + " " + bottom);
 		super.onLayout(changed, left, top, right, bottom);
 
 		if(mAdapter == null){
@@ -221,7 +227,7 @@ public class HorizontalListView extends AdapterView<ListAdapter> {
 			
 			View child = mAdapter.getView(mRightViewIndex, mRemovedViewQueue.poll(), this);
 			addAndMeasureChild(child, -1);
-			rightEdge += child.getMeasuredWidth();
+			rightEdge += child.getMeasuredWidth() + mSpacing;
 			
 			if(mRightViewIndex == mAdapter.getCount()-1){
 				mMaxX = mCurrentX + rightEdge - getWidth();
@@ -235,16 +241,16 @@ public class HorizontalListView extends AdapterView<ListAdapter> {
 		while(leftEdge + dx > 0 && mLeftViewIndex >= 0) {
 			View child = mAdapter.getView(mLeftViewIndex, mRemovedViewQueue.poll(), this);
 			addAndMeasureChild(child, 0);
-			leftEdge -= child.getMeasuredWidth();
+			leftEdge -= child.getMeasuredWidth() + mSpacing;
 			mLeftViewIndex--;
-			mDisplayOffset -= child.getMeasuredWidth();
+			mDisplayOffset -= child.getMeasuredWidth() + mSpacing;
 		}
 	}
 	
 	private void removeNonVisibleItems(final int dx) {
 		View child = getChildAt(0);
 		while(child != null && child.getRight() + dx <= 0) {
-			mDisplayOffset += child.getMeasuredWidth();
+			mDisplayOffset += child.getMeasuredWidth() + mSpacing;
 			mRemovedViewQueue.offer(child);
 			removeViewInLayout(child);
 			mLeftViewIndex++;
@@ -269,7 +275,7 @@ public class HorizontalListView extends AdapterView<ListAdapter> {
 				View child = getChildAt(i);
 				int childWidth = child.getMeasuredWidth();
 				child.layout(left, 0, left + childWidth, child.getMeasuredHeight());
-				left += childWidth;
+				left += childWidth + mSpacing;
 			}
 		}
 	}
