@@ -56,12 +56,15 @@ public class ShelfActivity extends Activity implements Library.ChangeListener {
 		((HorizontalListView)findViewById(R.id.shelf0)).setAdapter(myAdapter0);
 		((HorizontalListView)findViewById(R.id.shelf0)).setPadding(0, 20, 0, 20);
 		((HorizontalListView)findViewById(R.id.shelf0)).setSpacing(20);
+		((HorizontalListView)findViewById(R.id.shelf0)).setPreferredHeight(getCoverHeight() + 40);
 		((HorizontalListView)findViewById(R.id.shelf1)).setAdapter(myAdapter1);
 		((HorizontalListView)findViewById(R.id.shelf1)).setPadding(0, 20, 0, 20);
 		((HorizontalListView)findViewById(R.id.shelf1)).setSpacing(20);
+		((HorizontalListView)findViewById(R.id.shelf1)).setPreferredHeight(getCoverHeight() + 40);
 		((HorizontalListView)findViewById(R.id.shelf2)).setAdapter(myAdapter2);
 		((HorizontalListView)findViewById(R.id.shelf2)).setPadding(0, 20, 0, 20);
 		((HorizontalListView)findViewById(R.id.shelf2)).setSpacing(20);
+		((HorizontalListView)findViewById(R.id.shelf2)).setPreferredHeight(getCoverHeight() + 40);
 	}
 
 	public void onLibraryChanged(final Code code) {

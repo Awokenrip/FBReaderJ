@@ -59,6 +59,7 @@ public class HorizontalListView extends AdapterView<ListAdapter> {
 	private OnItemClickListener mOnItemClicked;
 	private boolean mDataChanged = false;
 	private int mSpacing = 0;
+	private int mHeight = 1;
 	
 
 	public HorizontalListView(Context context, AttributeSet attrs) {
@@ -79,6 +80,10 @@ public class HorizontalListView extends AdapterView<ListAdapter> {
 	
 	public void setSpacing(int spacing) {
 		mSpacing = spacing;
+	}
+
+	public void setPreferredHeight(int height) {
+		mHeight = height;
 	}
 
 	@Override
@@ -152,6 +157,14 @@ public class HorizontalListView extends AdapterView<ListAdapter> {
 		addViewInLayout(child, viewPos, params, true);
 		child.measure(MeasureSpec.makeMeasureSpec(getWidth(), MeasureSpec.AT_MOST),
 				MeasureSpec.makeMeasureSpec(getHeight(), MeasureSpec.AT_MOST));
+	}
+
+	@Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        setMeasuredDimension(
+			getDefaultSize(getSuggestedMinimumWidth(), widthMeasureSpec),
+			mHeight
+		);
 	}
 
 	@Override
