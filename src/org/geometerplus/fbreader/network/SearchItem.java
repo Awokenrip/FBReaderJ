@@ -20,26 +20,46 @@
 package org.geometerplus.fbreader.network;
 
 import org.geometerplus.zlibrary.core.network.ZLNetworkRequest;
+import org.geometerplus.zlibrary.core.network.ZLNetworkException;
 
 import org.geometerplus.fbreader.network.tree.NetworkItemsLoader;
+import org.geometerplus.fbreader.network.urlInfo.*;
 
-public class NetworkOperationData {
-	public final INetworkLink Link;
-	public NetworkItemsLoader Loader;
-	public String ResumeURI;
+public abstract class SearchItem extends NetworkCatalogItem {
+	private String myPattern;
 
-	public NetworkOperationData(INetworkLink link, NetworkItemsLoader loader) {
-		Link = link;
-		Loader = loader;
+	protected SearchItem(INetworkLink link, String summary) {
+		super(
+			link,
+			NetworkLibrary.resource().getResource("search").getValue(),
+			summary,
+			new UrlInfoCollection<UrlInfo>(),
+			Accessibility.ALWAYS,
+			FLAGS_DEFAULT
+		);
 	}
 
-	protected void clear() {
-		ResumeURI = null;
+	public void setPattern(String pattern) {
+		myPattern = pattern;
 	}
 
-	public final ZLNetworkRequest resume() {
-		final ZLNetworkRequest request = Link.resume(this);
-		clear();
-		return request;
+	public String getPattern() {
+		return myPattern;
+	}
+
+	@Override
+	public boolean canBeOpened() {
+		return myPattern != null;
+	}
+
+	@Override
+	public void loadChildren(NetworkItemsLoader loader) throws ZLNetworkException {
+	}
+
+	public abstract void runSearch(NetworkItemsLoader loader, String pattern) throws ZLNetworkException;
+
+	@Override
+	public String getStringId() {
+		return "@Search";
 	}
 }

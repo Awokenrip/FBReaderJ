@@ -19,19 +19,18 @@
 
 package org.geometerplus.android.fbreader.network.action;
 
-import android.app.Activity;
+import org.geometerplus.zlibrary.ui.android.R;
 
-import org.geometerplus.fbreader.network.NetworkTree;
-import org.geometerplus.fbreader.network.NetworkCatalogItem;
-import org.geometerplus.fbreader.network.NetworkURLCatalogItem;
+import org.geometerplus.fbreader.network.*;
 import org.geometerplus.fbreader.network.tree.NetworkCatalogTree;
+import org.geometerplus.fbreader.network.tree.CatalogExpander;
 import org.geometerplus.fbreader.network.urlInfo.UrlInfo;
 
-import org.geometerplus.android.fbreader.network.ItemsLoadingService;
+import org.geometerplus.android.fbreader.network.NetworkLibraryActivity;
 
 public class ReloadCatalogAction extends CatalogAction {
-	public ReloadCatalogAction(Activity activity) {
-		super(activity, ActionCode.RELOAD_CATALOG, "reload");
+	public ReloadCatalogAction(NetworkLibraryActivity activity) {
+		super(activity, ActionCode.RELOAD_CATALOG, "reload", R.drawable.ic_menu_refresh);
 	}
 
 	@Override
@@ -45,19 +44,15 @@ public class ReloadCatalogAction extends CatalogAction {
 		}
 		return
 			((NetworkURLCatalogItem)item).getUrl(UrlInfo.Type.Catalog) != null &&
-			ItemsLoadingService.getRunnable(tree) == null;
+			NetworkLibrary.Instance().getStoredLoader(tree) == null;
 	}
 
 	@Override
 	protected void run(NetworkTree tree) {
-		if (ItemsLoadingService.getRunnable(tree) != null) {
+		if (NetworkLibrary.Instance().getStoredLoader(tree) != null) {
 			return;
 		}
 		((NetworkCatalogTree)tree).clearCatalog();
-		ItemsLoadingService.start(
-			myActivity,
-			tree,
-			new CatalogExpander(myActivity, (NetworkCatalogTree)tree, false, false)
-		);
+		new CatalogExpander((NetworkCatalogTree)tree, false, false).start();
 	}
 }

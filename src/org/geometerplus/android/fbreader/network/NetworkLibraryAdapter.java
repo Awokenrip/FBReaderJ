@@ -32,14 +32,14 @@ import org.geometerplus.zlibrary.core.image.ZLLoadableImage;
 import org.geometerplus.zlibrary.ui.android.image.ZLAndroidImageManager;
 import org.geometerplus.zlibrary.ui.android.image.ZLAndroidImageData;
 
-import org.geometerplus.fbreader.network.NetworkTree;
+import org.geometerplus.fbreader.network.*;
 import org.geometerplus.fbreader.network.tree.*;
 
-import org.geometerplus.android.fbreader.tree.ListAdapter;
+import org.geometerplus.android.fbreader.tree.TreeAdapter;
 
 import org.geometerplus.android.fbreader.network.action.NetworkBookActions;
 
-class NetworkLibraryAdapter extends ListAdapter {
+class NetworkLibraryAdapter extends TreeAdapter {
 	NetworkLibraryAdapter(NetworkLibraryActivity activity) {
 		super(activity);
 	}
@@ -59,7 +59,7 @@ class NetworkLibraryAdapter extends ListAdapter {
 			LayoutInflater.from(parent.getContext()).inflate(R.layout.network_tree_item, parent, false);
 
 		((TextView)view.findViewById(R.id.network_tree_item_name)).setText(tree.getName());
-		((TextView)view.findViewById(R.id.network_tree_item_childrenlist)).setText(tree.getSecondString());
+		((TextView)view.findViewById(R.id.network_tree_item_childrenlist)).setText(tree.getSummary());
 
 		if (myCoverWidth == -1) {
 			view.measure(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -95,7 +95,7 @@ class NetworkLibraryAdapter extends ListAdapter {
 
 	private void setupCover(final ImageView coverView, NetworkTree tree, int width, int height) {
 		Bitmap coverBitmap = null;
-		ZLImage cover = tree.getCover();
+		final ZLImage cover = tree.getCover();
 		if (cover != null) {
 			ZLAndroidImageData data = null;
 			final ZLAndroidImageManager mgr = (ZLAndroidImageManager)ZLAndroidImageManager.Instance();
@@ -117,10 +117,10 @@ class NetworkLibraryAdapter extends ListAdapter {
 			coverView.setImageBitmap(coverBitmap);
 		} else if (tree instanceof NetworkBookTree) {
 			coverView.setImageResource(R.drawable.ic_list_library_book);
+		} else if (tree instanceof SearchCatalogTree) {
+			coverView.setImageResource(R.drawable.ic_list_library_search);
 		} else if (tree instanceof AddCustomCatalogItemTree) {
 			coverView.setImageResource(R.drawable.ic_list_plus);
-		} else if (tree instanceof SearchItemTree) {
-			coverView.setImageResource(R.drawable.ic_list_searchresult);
 		} else {
 			coverView.setImageResource(R.drawable.ic_list_library_books);
 		}

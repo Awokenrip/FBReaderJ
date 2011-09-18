@@ -19,25 +19,10 @@
 
 package org.geometerplus.fbreader.network.tree;
 
-import org.geometerplus.fbreader.network.*;
+import org.geometerplus.fbreader.network.opds.BasketItem;
 
-public final class RootTree extends NetworkTree {
-	public final boolean IsFake;
-
-	private final String myId;
-
-	public RootTree(String id, boolean isFake) {
-		IsFake = isFake;
-		myId = id;
-	}
-
-	@Override
-	public String getName() {
-		return NetworkLibrary.resource().getValue();
-	}
-
-	@Override
-	protected String getStringId() {
-		return myId;
+public class BasketCatalogTree extends NetworkCatalogTree {
+	public BasketCatalogTree(NetworkCatalogTree parent, BasketItem item, int position) {
+		super(parent, item, position);
 	}
 }

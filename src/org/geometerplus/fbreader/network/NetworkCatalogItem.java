@@ -26,6 +26,7 @@ import org.geometerplus.zlibrary.core.network.ZLNetworkException;
 
 import org.geometerplus.fbreader.network.authentication.NetworkAuthenticationManager;
 import org.geometerplus.fbreader.network.urlInfo.UrlInfoCollection;
+import org.geometerplus.fbreader.network.tree.NetworkItemsLoader;
 
 public abstract class NetworkCatalogItem extends NetworkItem {
 	// bit mask for flags parameter
@@ -33,6 +34,7 @@ public abstract class NetworkCatalogItem extends NetworkItem {
 	public static final int FLAG_GROUP_BY_AUTHOR                          = 1 << 1;
 	public static final int FLAG_GROUP_BY_SERIES                          = 1 << 2;
 	public static final int FLAG_GROUP_MORE_THAN_1_BOOK_BY_SERIES         = 1 << 3;
+	public static final int FLAG_ADD_SEARCH_ITEM                          = 1 << 4;
 
 	public static final int FLAGS_DEFAULT =
 		FLAG_SHOW_AUTHOR |
@@ -74,13 +76,15 @@ public abstract class NetworkCatalogItem extends NetworkItem {
 		return Collections.emptyMap();
 	}
 
-	public abstract void loadChildren(NetworkOperationData.OnNewItemListener listener) throws ZLNetworkException;
+	public abstract boolean canBeOpened();
+
+	public abstract void loadChildren(NetworkItemsLoader loader) throws ZLNetworkException;
 
 	public boolean supportsResumeLoading() {
 		return false;
 	}
 
-	public void resumeLoading(NetworkOperationData.OnNewItemListener listener) throws ZLNetworkException {
+	public void resumeLoading(NetworkItemsLoader loader) throws ZLNetworkException {
 		throw new ZLNetworkException(NetworkException.ERROR_UNSUPPORTED_OPERATION);
 	}
 
@@ -93,6 +97,10 @@ public abstract class NetworkCatalogItem extends NetworkItem {
 	}
 
 	public ZLBoolean3 getVisibility() {
+		if (Link == null) {
+			return ZLBoolean3.B3_TRUE;
+		}
+
 		final NetworkAuthenticationManager mgr = Link.authenticationManager();
 		switch (myAccessibility) {
 			default:
