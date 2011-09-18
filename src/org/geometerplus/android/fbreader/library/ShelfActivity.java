@@ -65,6 +65,10 @@ public class ShelfActivity extends Activity implements Library.ChangeListener {
 		((HorizontalListView)findViewById(R.id.shelf2)).setPadding(0, 20, 0, 20);
 		((HorizontalListView)findViewById(R.id.shelf2)).setSpacing(20);
 		((HorizontalListView)findViewById(R.id.shelf2)).setPreferredHeight(getCoverHeight() + 40);
+		((HorizontalListView)findViewById(R.id.shelf3)).setAdapter(myAdapter2);
+		((HorizontalListView)findViewById(R.id.shelf3)).setPadding(0, 20, 0, 20);
+		((HorizontalListView)findViewById(R.id.shelf3)).setSpacing(20);
+		((HorizontalListView)findViewById(R.id.shelf3)).setPreferredHeight(getCoverHeight() + 40);
 	}
 
 	public void onLibraryChanged(final Code code) {
@@ -98,6 +102,7 @@ public class ShelfActivity extends Activity implements Library.ChangeListener {
 	private void initMetrics() {
 		final DisplayMetrics metrics = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(metrics);
+		/*
 		int height = (int)metrics.ydpi;
 		int widht = (int)metrics.xdpi * 3 / 4;
 		final int maxHeight = metrics.heightPixels * 7 / 10;
@@ -105,6 +110,9 @@ public class ShelfActivity extends Activity implements Library.ChangeListener {
 			widht = widht * maxHeight / height;
 			height = maxHeight;
 		}
+		*/
+		int height = 140;
+		int widht = height * (int)metrics.xdpi * 3 / (int)metrics.ydpi / 4;
 		myCoverWidth = widht;
 		myCoverHeight = height;
 	}

@@ -5,6 +5,7 @@
 	android:orientation="vertical"
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
+  android:background="@drawable/shelf"
 >
 	<com.devsmart.android.ui.HorizontalListView
 		android:id="@+id/shelf0"
@@ -18,6 +19,11 @@
 	/>
 	<com.devsmart.android.ui.HorizontalListView
 		android:id="@+id/shelf2"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+	/>
+	<com.devsmart.android.ui.HorizontalListView
+		android:id="@+id/shelf3"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 	/>
